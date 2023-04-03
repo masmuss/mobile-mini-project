@@ -6,6 +6,7 @@ class Movie {
   final String category;
   final int year;
   final Duration duration;
+  final bool isInWatchlist;
 
   const Movie({
       required this.name,
@@ -15,6 +16,7 @@ class Movie {
       required this.category,
       required this.year,
       required this.duration,
+      this.isInWatchlist = false,
   });
 
   static List<Movie> movies = const [

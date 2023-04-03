@@ -4,13 +4,16 @@ class MovieListItem extends StatelessWidget {
   final String imageUrl;
   final String name;
   final String information;
+  final Widget? trailing;
   final GlobalKey backgroundImageKey = GlobalKey();
 
   MovieListItem(
       {Key? key,
       required this.imageUrl,
       required this.name,
-      required this.information})
+      required this.information,
+      required this.trailing
+      })
       : super(key: key);
 
   @override
@@ -18,10 +21,11 @@ class MovieListItem extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       child: AspectRatio(
-          aspectRatio: 16 / 9,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(15.0),
-            child: Stack(children: [
+        aspectRatio: 16 / 9,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15.0),
+          child: Stack(
+            children: [
               Flow(
                 delegate: _ParallaxFlowDelegate(
                   scrollable: Scrollable.of(context)!,
@@ -53,30 +57,38 @@ class MovieListItem extends StatelessWidget {
                 ),
               ),
               Positioned(
-                  bottom: 20,
-                  left: 20,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(name,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline6!
-                              .copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
-                      Text(information,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
-                    ],
-                  ))
-            ]),
-          )),
+                bottom: 20,
+                left: 20,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: Theme.of(context).textTheme.headline6!.copyWith(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      information,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: trailing!,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

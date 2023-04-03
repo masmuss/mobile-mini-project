@@ -3,6 +3,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:wppb_mini_project/models/movie_model.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
+import 'package:provider/provider.dart';
+import 'package:wppb_mini_project/providers/movie_provider.dart';
 
 class MovieScreen extends StatelessWidget {
   final Movie movie;
@@ -38,7 +40,17 @@ class MovieScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  if (!Provider.of<MovieProvider>(context, listen: false)
+                      .watchList
+                      .contains(movie)) {
+                    Provider.of<MovieProvider>(context, listen: false)
+                        .addToWatchList(movie);
+                  } else {
+                    Provider.of<MovieProvider>(context, listen: false)
+                        .removeFromWatchList(movie);
+                  }
+                },
                 child: RichText(
                   text: TextSpan(
                       style: Theme.of(context)
@@ -47,13 +59,15 @@ class MovieScreen extends StatelessWidget {
                           .copyWith(color: Colors.white),
                       children: [
                         TextSpan(
-                          text: 'Add to ',
+                          text: Provider.of<MovieProvider>(context)
+                                  .watchList
+                                  .contains(movie)
+                              ? 'Added to '
+                              : 'Add to ',
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge!
-                              .copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
+                              .copyWith(fontWeight: FontWeight.bold),
                         ),
                         const TextSpan(text: 'Watchlist'),
                       ]),
@@ -79,9 +93,7 @@ class MovieScreen extends StatelessWidget {
                 },
                 child: RichText(
                   text: TextSpan(
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge!,
+                      style: Theme.of(context).textTheme.bodyLarge!,
                       children: [
                         TextSpan(
                           text: 'Start ',
@@ -187,15 +199,18 @@ class __MoviePlayerState extends State<_MoviePlayer> {
   late ChewieController _chewieController;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     // get video from youtube
     _videoPlayerController = VideoPlayerController.asset(widget.movie.videoPath)
-    ..initialize().then((value) {
+      ..initialize().then((value) {
         setState(() {});
       });
 
-    _chewieController = ChewieController(videoPlayerController: _videoPlayerController, autoPlay: true, aspectRatio: 16 / 9);
+    _chewieController = ChewieController(
+        videoPlayerController: _videoPlayerController,
+        autoPlay: true,
+        aspectRatio: 16 / 9);
 
     @override
     void dispose() {
@@ -208,12 +223,11 @@ class __MoviePlayerState extends State<_MoviePlayer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: SafeArea(
-        child: Chewie(
-          controller: _chewieController,
-        ),
-      )
-    );
+        backgroundColor: Colors.transparent,
+        body: SafeArea(
+          child: Chewie(
+            controller: _chewieController,
+          ),
+        ));
   }
 }
